@@ -1,0 +1,96 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load your Excel file
+df = pd.read_excel("cricket_mixed_50.xlsx")
+
+# -------------------------------
+# 1. BASIC DATA INFORMATION
+# -------------------------------
+print("\n----- SHAPE OF DATA -----")
+print(df.shape)
+
+print("\n----- FIRST 5 ROWS -----")
+print(df.head())
+
+print("\n----- SUMMARY STATISTICS -----")
+print(df.describe(include='all'))
+
+print("\n----- NULL VALUES -----")
+print(df.isnull().sum())
+
+
+# -------------------------------
+# 2. PLAYER PERFORMANCE ANALYSIS
+# -------------------------------
+
+# Average Runs per Player
+avg_runs = df.groupby("Player_Name")["Runs"].mean().sort_values(ascending=False)
+print("\n----- AVERAGE RUNS PER PLAYER -----")
+print(avg_runs)
+
+# Strike Rate per Player
+avg_sr = df.groupby("Player_Name")["Strike_Rate"].mean().sort_values(ascending=False)
+print("\n----- AVERAGE STRIKE RATE PER PLAYER -----")
+print(avg_sr)
+
+
+# -------------------------------
+# 3. FORMAT-WISE PERFORMANCE
+# -------------------------------
+format_runs = df.groupby("Format")["Runs"].mean()
+print("\n----- FORMAT-WISE AVERAGE RUNS -----")
+print(format_runs)
+
+format_sr = df.groupby("Format")["Strike_Rate"].mean()
+print("\n----- FORMAT-WISE STRIKE RATE -----")
+print(format_sr)
+
+
+# -------------------------------
+# 4. VENUE-WISE PERFORMANCE
+# -------------------------------
+venue_perf = df.groupby("Venue")["Runs"].mean().sort_values(ascending=False)
+print("\n----- VENUE-WISE PERFORMANCE (AVG RUNS) -----")
+print(venue_perf)
+
+
+# -------------------------------
+# 5. OPPOSITION ANALYSIS
+# -------------------------------
+opp_perf = df.groupby("Opposition")["Runs"].mean().sort_values(ascending=False)
+print("\n----- BEST OPPOSITION PERFORMANCE -----")
+print(opp_perf)
+
+
+# -------------------------------
+# 6. BOWLING ANALYSIS
+# -------------------------------
+bowler_perf = df.groupby("Player_Name")["Wickets"].sum().sort_values(ascending=False)
+print("\n----- TOTAL WICKETS PER PLAYER -----")
+print(bowler_perf)
+
+eco_perf = df.groupby("Player_Name")["Economy"].mean().sort_values().dropna()
+print("\n----- BOWLER ECONOMY RATES -----")
+print(eco_perf)
+
+
+# -------------------------------
+# 7. TOP PERFORMERS
+# -------------------------------
+print("\n----- TOP 5 HIGHEST RUNS -----")
+print(df.nlargest(5, "Runs")[["Player_Name","Runs","Format","Venue"]])
+
+print("\n----- TOP 5 WICKET TAKERS -----")
+print(df.nlargest(5, "Wickets")[["Player_Name","Wickets","Economy","Format"]])
+
+
+# -------------------------------
+# OPTIONAL: SIMPLE VISUALS
+# -------------------------------
+plt.figure(figsize=(10,5))
+avg_runs.head(10).plot(kind="bar")
+plt.title("Top 10 Players – Average Runs")
+plt.xlabel("Player")
+plt.ylabel("Average Runs")
+plt.show()
